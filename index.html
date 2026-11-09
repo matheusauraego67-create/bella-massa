@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pizzaria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#120e0c;--bg2:#1a1411;--card:#221a16;--gold:#d9a441;--gold2:#f0c46a;--red:#b8321f;--red2:#9b2918;--tx:#f4eadb;--mut:#a99b8c;--line:#3a2d26;
+  --serif:'Playfair Display',Georgia,serif;--sans:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;--ok:#27ae60}
+#admin,.panel{--bg:#f7f0e6;--card:#fff;--tx:#2b2220;--mut:#7a6d68;--line:#e8dccd}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:#2b2220}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--gold);border-color:var(--gold)}
+label{display:grid;gap:5px;font-size:.86rem;color:var(--mut);margin-bottom:12px;font-weight:500}
+.btn{background:var(--red);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;font-weight:600;transition:.2s}
+.btn:hover{background:var(--red2)}
+.btn.gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#2a1a08}
+.btn.gold:hover{filter:brightness(1.08)}
+.btn.sec{background:#fff;color:var(--red);border:1px solid var(--red)}
+.btn.sec:hover{background:#fdecea}
+.btn.gray{background:#efe6dc;color:#2b2220}
+.btn.gray:hover{background:#e6d9c9}
+.btn.ok{background:var(--ok)}
+.btn.sm{padding:7px 11px;font-size:.84rem}
+.btn.big{width:100%;padding:14px;font-size:1.02rem}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+/* ===== LOJA ===== */
+#loja{background:radial-gradient(1100px 600px at 85% -5%,#3d1c13 0,transparent 60%),var(--bg);min-height:100vh}
+.bar{background:linear-gradient(90deg,#7b241c,#b8321f,#7b241c);color:#fff;text-align:center;font-size:.82rem;padding:7px 12px;letter-spacing:.2px}
+.nav{position:sticky;top:0;z-index:30;background:rgba(18,14,12,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:66px;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--tx);text-decoration:none;font-family:var(--serif);font-weight:700;font-size:1.25rem}
+.logo{width:38px;height:38px;flex:none}
+.logo svg{width:100%;height:100%}
+.nav-r{display:flex;align-items:center;gap:6px}
+.lnk{color:var(--mut);text-decoration:none;font-size:.9rem;padding:8px 12px;border-radius:8px}
+.lnk:hover{color:var(--gold2)}
+.btn-meu{background:transparent;color:var(--gold2);border:1px solid var(--gold);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:.85rem}
+.cartbtn{position:relative;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#2a1a08;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;font-weight:700}
+.cartbtn i{position:absolute;top:-8px;right:-8px;background:var(--red);color:#fff;border-radius:99px;font-style:normal;font-size:.72rem;padding:2px 7px;font-weight:700;border:2px solid var(--bg)}
+.hero{padding:56px 0 40px}
+.hero-in{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:center}
+.eyebrow{display:inline-block;color:var(--gold2);text-transform:uppercase;letter-spacing:3px;font-size:.74rem;font-weight:600}
+.hero h1{font-family:var(--serif);font-size:clamp(2.4rem,5.4vw,4.2rem);line-height:1.04;margin:12px 0 14px;font-weight:800}
+.lead{color:var(--mut);font-size:1.1rem;line-height:1.55;max-width:520px;margin:0 0 22px}
+.cta{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.cta .btn{padding:13px 24px;font-size:1rem}
+.badge{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:99px;font-weight:600;font-size:.84rem}
+.badge.on{background:#12301f;color:#58d68d;border:1px solid #1e6b3f}
+.badge.off{background:#35160f;color:#f1948a;border:1px solid #7b2a1e}
+.facts{display:flex;gap:28px;margin-top:32px;padding-top:22px;border-top:1px solid var(--line);flex-wrap:wrap}
+.facts b{display:block;font-family:var(--serif);font-size:1.5rem;color:var(--gold2)}
+.facts small{color:var(--mut);font-size:.8rem}
+.hero-p{position:relative;max-width:480px;margin:0 auto;width:100%}
+.hero-p .glow{position:absolute;inset:4%;background:radial-gradient(circle,#d9a44166,transparent 65%);filter:blur(24px)}
+.spin{position:relative;animation:spin 80s linear infinite}
+.spin svg{width:100%;height:auto;display:block;filter:drop-shadow(0 25px 30px #000a)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sec-h{text-align:center;margin:30px 0 22px}
+.sec-h h2{font-family:var(--serif);font-size:clamp(1.8rem,3.6vw,2.6rem);margin:8px 0 0}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:30px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;text-align:center}
+.step .n{width:44px;height:44px;margin:0 auto 12px;border-radius:50%;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#2a1a08;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:800;font-size:1.2rem}
+.step h3{margin:0 0 6px;font-family:var(--serif)}
+.step p{margin:0;color:var(--mut);font-size:.92rem;line-height:1.5}
+.chips{display:flex;gap:8px;overflow:auto;padding:12px 0;position:sticky;top:66px;background:linear-gradient(var(--bg) 70%,transparent);z-index:20;justify-content:center;scrollbar-width:none}
+.chips a{white-space:nowrap;padding:8px 18px;border-radius:99px;background:var(--card);border:1px solid var(--line);color:var(--tx);text-decoration:none;font-size:.9rem;font-weight:500;transition:.2s}
+.chips a:hover{border-color:var(--gold);color:var(--gold2)}
+h2.cat{font-family:var(--serif);font-size:1.7rem;margin:34px 0 16px;display:flex;align-items:center;gap:14px;scroll-margin-top:130px}
+h2.cat::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:20px}
+.dish{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s,transform .6s,border-color .25s,box-shadow .25s}
+.reveal.in{opacity:1;transform:none}
+.dish:hover{transform:translateY(-5px);border-color:var(--gold);box-shadow:0 16px 34px #000a}
+.imgbox{aspect-ratio:4/3;background:radial-gradient(circle at 50% 55%,#4d3527 0,#1c1410 72%);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.imgbox svg{width:76%;height:auto;max-height:94%;transition:transform .6s}
+.dish:hover .imgbox svg{transform:scale(1.08) rotate(8deg)}
+.imgbox img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.dish:hover .imgbox img{transform:scale(1.06)}
+.dish.off .imgbox{filter:none}
+.soldout{position:absolute;top:14px;left:14px;background:#7b241c;color:#fff;font-size:.74rem;font-weight:700;padding:5px 12px;border-radius:99px;z-index:2;letter-spacing:.5px}
+.dbody{padding:18px;display:flex;flex-direction:column;gap:10px;flex:1}
+.dbody h3{font-family:var(--serif);font-size:1.3rem;margin:0}
+.dbody p{color:var(--mut);font-size:.9rem;line-height:1.5;margin:0;flex:1}
+.dfoot{display:flex;gap:10px;align-items:center;justify-content:space-between}
+.price{font-family:var(--serif);font-size:1.4rem;color:var(--gold2);font-weight:700}
+.dish select{background:var(--bg2);color:var(--tx);border:1px solid var(--line);flex:1;min-width:0;padding:9px 10px}
+.dish .btn{padding:10px 16px;white-space:nowrap}
+.empty{text-align:center;color:var(--mut);padding:30px 0}
+.foot{margin-top:60px;background:#0b0807;border-top:1px solid var(--line);padding:42px 0 26px}
+.foot-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px}
+.foot h4{font-family:var(--serif);margin:0 0 10px;color:var(--gold2)}
+.foot p{margin:4px 0;color:var(--mut);font-size:.92rem;line-height:1.5}
+.foot a{color:var(--mut)}
+.foot .copy{text-align:center;margin-top:30px;padding-top:18px;border-top:1px solid var(--line);font-size:.82rem;color:var(--mut)}
+.zap{display:inline-block;margin-top:8px;text-decoration:none!important;color:#fff!important}
+
+/* ===== modal / drawer (claro) ===== */
+.ov{position:fixed;inset:0;background:#000a;z-index:60;display:flex;justify-content:flex-end;animation:fade .2s}
+.ov.center{justify-content:center;align-items:center;padding:14px}
+.panel{background:#fffaf3;color:var(--tx);width:min(440px,100%);height:100%;overflow:auto;padding:22px;animation:slide .25s}
+.ov.center .panel{height:auto;max-height:94vh;border-radius:18px;animation:pop .22s}
+.panel h3{font-family:var(--serif);font-size:1.45rem;margin:0 0 12px}
+@keyframes fade{from{opacity:0}}
+@keyframes slide{from{transform:translateX(40px);opacity:0}}
+@keyframes pop{from{transform:scale(.94);opacity:0}}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.crow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.crow .t{flex:1;min-width:0}
+.mini{width:48px;height:48px;border-radius:12px;background:radial-gradient(circle,#4d3527,#1c1410);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;flex:none}
+.mini svg{width:88%;height:88%}
+.mini img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:1rem}
+.tot{background:#fbefdc;border-radius:12px;padding:12px 14px;margin:14px 0}
+.tot div{display:flex;justify-content:space-between;padding:3px 0}
+.tot .g{font-weight:800;font-size:1.1rem;border-top:1px dashed #d5b99a;margin-top:5px;padding-top:8px}
+.note{background:#fef5dc;border:1px solid #f0d58a;border-radius:10px;padding:10px 13px;font-size:.88rem;margin-bottom:14px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#2b2220;color:#fff;padding:11px 20px;border-radius:99px;z-index:99;font-size:.9rem;box-shadow:0 8px 24px #0006}
+
+/* ===== ADMIN (claro) ===== */
+#admin{background:var(--bg);color:var(--tx);min-height:100vh}
+.adm-head{background:#17110e;color:#f4eadb;padding:14px 0;border-bottom:3px solid var(--gold)}
+.adm-head .wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.adm-head .t{font-family:var(--serif);font-size:1.15rem;font-weight:700}
+.role{background:var(--gold);color:#2a1a08;border-radius:6px;padding:2px 9px;font-size:.72rem;font-weight:700;margin-left:6px;letter-spacing:.5px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0}
+.tabs button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:8px 18px;cursor:pointer;color:var(--tx);font-weight:500}
+.tabs button.on{background:#17110e;color:var(--gold2);border-color:#17110e}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}
+.ped-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.st{color:#fff;padding:4px 11px;border-radius:99px;font-size:.78rem;font-weight:700}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:10px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;color:var(--mut);font-size:.88rem}
+.stat b{display:block;font-family:var(--serif);font-size:1.7rem;color:var(--red);margin:4px 0}
+.mrow{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.mrow:last-child{border-bottom:0}
+.mrow .n{flex:1;min-width:150px}
+.sw{display:flex;align-items:center;gap:7px;font-size:.85rem}
+.sw input{width:auto}
+.login{max-width:380px;margin:70px auto}
+.err{color:#c0392b;font-size:.88rem;min-height:1.2em}
+.foto{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.foto .prev{width:84px;height:84px;border-radius:14px;background:#efe6dc;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:.7rem;text-align:center;color:var(--mut);flex:none}
+.foto .prev img{width:100%;height:100%;object-fit:cover}
+@media(max-width:820px){.hero-in{grid-template-columns:1fr}.hero-p{max-width:320px;order:-1}.lnk{display:none}.chips{justify-content:flex-start}.hero{padding-top:30px}}
+@media(max-width:560px){.row{grid-template-columns:1fr}.cartbtn span{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ===================== LOJA ===================== -->
+<div id="loja">
+  <div class="bar">💵 Pagamento somente na entrega &nbsp;•&nbsp; <span id="barInfo"></span></div>
+  <nav class="nav"><div class="wrap nav-in">
+    <a class="brand" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'});return false"><span class="logo" id="logo"></span><span id="lNome"></span></a>
+    <div class="nav-r">
+      <a class="lnk" href="#" onclick="goTo('cardapio');return false">Cardápio</a>
+      <a class="lnk" href="#" onclick="goTo('como');return false">Como funciona</a>
+      <a class="lnk" href="#" onclick="goTo('contato');return false">Contato</a>
+      <button class="btn-meu" id="btnMeu" hidden onclick="meuPedido()">Meu pedido</button>
+      <button class="cartbtn" onclick="abrirCarrinho()">🛒 <span>Carrinho</span><i id="cartN">0</i></button>
+    </div>
+  </div></nav>
+
+  <section class="hero"><div class="wrap hero-in">
+    <div>
+      <span class="eyebrow">Pizzaria artesanal</span>
+      <h1 id="hTitle"></h1>
+      <p class="lead" id="lSlogan"></p>
+      <div class="cta"><button class="btn gold" onclick="goTo('cardapio')">Ver cardápio</button><span id="lStatus" class="badge"></span></div>
+      <div class="facts">
+        <div><b id="fTempo"></b><small>Tempo de entrega</small></div>
+        <div><b id="fTaxa"></b><small>Taxa de entrega</small></div>
+        <div><b id="fMin"></b><small>Pedido mínimo</small></div>
+      </div>
+    </div>
+    <div class="hero-p"><div class="glow"></div><div class="spin" id="heroPizza"></div></div>
+  </div></section>
+
+  <section id="como" class="wrap">
+    <div class="sec-h"><span class="eyebrow">Simples e rápido</span><h2>Como funciona</h2></div>
+    <div class="steps">
+      <div class="step"><div class="n">1</div><h3>Escolha</h3><p>Monte o pedido com suas pizzas e bebidas favoritas.</p></div>
+      <div class="step"><div class="n">2</div><h3>Confirme</h3><p>Informe o endereço. Nenhum pagamento é feito online.</p></div>
+      <div class="step"><div class="n">3</div><h3>Receba e pague</h3><p>Pague na porta, em dinheiro, Pix ou cartão.</p></div>
+    </div>
+  </section>
+
+  <section id="cardapio" class="wrap">
+    <div class="sec-h"><span class="eyebrow">Nosso cardápio</span><h2>Escolha seu sabor</h2></div>
+    <div class="chips" id="chips"></div>
+    <div id="menu"></div>
+  </section>
+
+  <footer class="foot" id="contato"><div class="wrap">
+    <div class="foot-g" id="footG"></div>
+    <div class="copy"><span id="copyN"></span> • <a href="#admin">Área da equipe</a></div>
+  </div></footer>
+</div>
+
+<!-- ===================== ADMIN ===================== -->
+<div id="admin" hidden></div>
+<div id="modal" hidden></div>
+<div id="toast" class="toast" hidden></div>
+
+<script>
+/* ============ utilidades ============ */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const toNum=s=>{const n=parseFloat(String(s).replace(',','.'));return isNaN(n)?0:n};
+const hash=s=>{let h=5381;const t='pz|'+s;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return 'h'+(h>>>0).toString(36)};
+function toast(m){const t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2200)}
+function modal(html,center=true){$('modal').innerHTML=`<div class="ov ${center?'center':''}" onmousedown="if(event.target===this)closeModal()"><div class="panel">${html}</div></div>`;$('modal').hidden=false}
+function closeModal(){$('modal').hidden=true;$('modal').innerHTML=''}
+function goTo(id){const e=$(id);if(e)e.scrollIntoView({behavior:'smooth'})}
+
+/* ============ ilustrações (SVG) ============ */
+let _uid=0;
+function rnd(seed){let s=seed*977+13;return()=>{s=(s*9301+49297)%233280;return s/233280}}
+function pts(n,r,seed,md=0){const R=rnd(seed),a=[];let t=0;
+  while(a.length<n&&t<n*80){t++;const ang=R()*6.2832,d=Math.sqrt(R())*r,x=100+Math.cos(ang)*d,y=100+Math.sin(ang)*d;
+    if(md&&a.some(p=>Math.hypot(p[0]-x,p[1]-y)<md)){R();continue}a.push([x,y,R()])}
+  return a}
+function blob(cx,cy,r,n,seed,amp){const R=rnd(seed),p=[];
+  for(let i=0;i<n;i++){const a=i/n*6.2832,d=r+(R()-.5)*2*amp;p.push([cx+Math.cos(a)*d,cy+Math.sin(a)*d])}
+  let d=`M${(p[0][0]+p[n-1][0])/2} ${(p[0][1]+p[n-1][1])/2}`;
+  for(let i=0;i<n;i++){const c=p[i],nx=p[(i+1)%n];d+=` Q${c[0]} ${c[1]} ${(c[0]+nx[0])/2} ${(c[1]+nx[1])/2}`}
+  return d+'Z'}
+const sp=(x,y,s,c='#ffe08a')=>`<path d="M${x} ${y-s}Q${x} ${y} ${x+s} ${y}Q${x} ${y} ${x} ${y+s}Q${x} ${y} ${x-s} ${y}Q${x} ${y} ${x} ${y-s}Z" fill="${c}"/>`;
+const leaf=(x,y,rot=0,s=1)=>`<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})"><path d="M0 0C4-9 15-10 20 0C15 10 4 9 0 0Z" fill="#46b650" stroke="#2a7a37" stroke-width="1.2" stroke-linejoin="round"/><path d="M1 0H18" stroke="#2a7a37" stroke-width="1.1"/><path d="M5-3.5C8-5.5 11-5.5 14-4.5" stroke="#a6ef9a" stroke-width="1.4" fill="none" stroke-linecap="round"/></g>`;
+const tomato=(x,y,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})"><circle r="10" fill="#ef4a37" stroke="#b92d1f" stroke-width="1.5"/><circle r="6.8" fill="#ff8a72"/><g fill="#ffd36b"><ellipse cx="0" cy="-3.2" rx="1.3" ry="2.1"/><ellipse cx="3" cy="2" rx="1.3" ry="2.1" transform="rotate(120 3 2)"/><ellipse cx="-3" cy="2" rx="1.3" ry="2.1" transform="rotate(-120 -3 2)"/></g><path d="M-6.5-5.5A9 9 0 0 1-1-8.8" stroke="#fff" stroke-opacity=".8" stroke-width="1.7" fill="none" stroke-linecap="round"/></g>`;
+const pep=(x,y,s=1)=>`<g transform="translate(${x} ${y}) scale(${s})"><circle r="9.2" fill="#c9301e" stroke="#7d1d12" stroke-width="1.5"/><circle r="6.6" fill="#e5593f"/><g fill="#8e2416"><circle cx="-2.5" cy="2" r="1.1"/><circle cx="3" cy="-1" r="1"/><circle cx="1" cy="4" r=".9"/><circle cx="-3" cy="-3" r=".9"/></g><path d="M-6-4A8 8 0 0 1-1-7.6" stroke="#fff" stroke-opacity=".75" stroke-width="1.6" fill="none" stroke-linecap="round"/></g>`;
+const olive=(x,y,s=1,hole='#f9d56e')=>`<g transform="translate(${x} ${y}) scale(${s})"><circle r="4.7" fill="#4f3b66" stroke="#2c2238" stroke-width="1"/><circle r="1.8" fill="${hole}"/><path d="M-3.4-1.8A4 4 0 0 1-.5-3.8" stroke="#fff" stroke-opacity=".6" stroke-width="1" fill="none" stroke-linecap="round"/></g>`;
+const onion=(x,y,rot=0)=>`<g transform="translate(${x} ${y}) rotate(${rot})"><ellipse rx="8.5" ry="6.5" fill="none" stroke="#b9559e" stroke-width="2.4"/><ellipse rx="8.5" ry="6.5" fill="none" stroke="#f0b7e0" stroke-width="1" opacity=".9"/><ellipse rx="4.6" ry="3.4" fill="none" stroke="#d98ccb" stroke-width="1.6"/></g>`;
+const mozz=(x,y,i,r=10)=>`<path d="${blob(x,y,r,9,i+1,2)}" fill="#fffaf0" stroke="#f0dcae" stroke-width="1.2"/><ellipse cx="${x-r*.3}" cy="${y-r*.3}" rx="${r*.34}" ry="${r*.2}" fill="#fff" opacity=".85"/>`;
+const berry=(x,y,s=1,rot=0)=>`<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})"><path d="M0 10C-12 3-11-8 0-6C11-8 12 3 0 10Z" fill="#ef3b57" stroke="#b11d3a" stroke-width="1.3" stroke-linejoin="round"/><path d="M-6.5-3C-6-5-4-6-2.5-6.2" stroke="#ff9db0" stroke-width="1.5" fill="none" stroke-linecap="round"/><g fill="#ffe2a0"><ellipse cx="-3.5" cy="1" rx=".8" ry="1.3"/><ellipse cx="3.5" cy="1" rx=".8" ry="1.3"/><ellipse cx="0" cy="4.5" rx=".8" ry="1.3"/><ellipse cx="0" cy="-.5" rx=".8" ry="1.3"/></g><path d="M-6-7L-2-5L0-9.5L2-5L6-7L3.5-3L-3.5-3Z" fill="#46b04f" stroke="#2a7a37" stroke-width=".8" stroke-linejoin="round"/></g>`;
+const chili=(x,y,rot=0,s=1)=>`<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})"><path d="M0 0C14-3 26 4 30 16C20 11 10 9 0 7Z" fill="#e0301e" stroke="#9a1f12" stroke-width="1.3" stroke-linejoin="round"/><path d="M4 2.2C12 1 20 4 25 9" stroke="#ff9a82" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M0 1L-5-2M0 4L-5 6" stroke="#3f9b3f" stroke-width="2.4" stroke-linecap="round"/></g>`;
+const banana=(x,y,rot=0,s=1)=>`<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})"><path d="M0 0C6 20 30 26 46 8C44 14 40 20 34 24C18 32 2 22 0 0Z" fill="#ffd93b" stroke="#b8901a" stroke-width="1.4" stroke-linejoin="round"/><path d="M4 7C11 18 25 22 38 14" stroke="#fff6a8" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="1" cy="1" r="2.4" fill="#6b4a1a"/></g>`;
+const wedge=(x,y,rot=0,s=1)=>`<g transform="translate(${x} ${y}) rotate(${rot}) scale(${s})"><path d="M0 22L36 6V24Z" fill="#fbd34d" stroke="#b8860b" stroke-width="1.5" stroke-linejoin="round"/><g fill="#e4a91b"><circle cx="26" cy="17" r="2.4"/><circle cx="31" cy="12" r="1.7"/><circle cx="19" cy="20" r="1.6"/></g><path d="M3 21L33 8" stroke="#fff3b0" stroke-width="1.5" stroke-linecap="round"/></g>`;
+const drop=(x,y,s=1)=>`<path transform="translate(${x} ${y}) scale(${s})" d="M0-8C5-1 6 3 0 6C-6 3-5-1 0-8Z" fill="#8fd3f7" stroke="#3a96cc" stroke-width="1.1"/>`;
+function citrus(x,y,r,c1,c2,c3){let seg='';for(let i=0;i<6;i++){const a=i*Math.PI/3+.3;seg+=`<line x1="0" y1="0" x2="${Math.cos(a)*(r-4)}" y2="${Math.sin(a)*(r-4)}" stroke="${c1}" stroke-width="1.8"/>`}
+  return `<g transform="translate(${x} ${y})"><circle r="${r}" fill="${c1}" stroke="${c2}" stroke-width="2"/><circle r="${r-4}" fill="${c3}"/>${seg}<circle r="1.8" fill="${c1}"/></g>`}
+
+function pizzaBase(inner,deco='',o={}){
+  const id='pz'+(++_uid),R=rnd(77);
+  const sauce=o.sauce||['#f0603f','#c42d1a'],ch=o.ch||['#fff0a8','#f8b93a'],cr=o.cr||['#fcdc96','#e29a3c'],bd=o.board||['#d6a06a','#8a5a2e'];
+  let cuts='';for(let i=0;i<8;i++){const a=i*Math.PI/4+.39,x=100+Math.cos(a)*81,y=100+Math.sin(a)*81;
+    cuts+=`<line x1="100" y1="100" x2="${x}" y2="${y}" stroke="#6b350e" stroke-opacity=".3" stroke-width="2.6" stroke-linecap="round"/><line x1="100" y1="100" x2="${x}" y2="${y}" stroke="#fff3c4" stroke-opacity=".45" stroke-width=".9"/>`}
+  let spots='';for(let i=0;i<15;i++){const a=i*.42+R()*.3,d=75.5+R()*3,px=100+Math.cos(a)*d,py=100+Math.sin(a)*d;
+    spots+=`<ellipse cx="${px}" cy="${py}" rx="${2+R()*2.4}" ry="${1.3+R()*1.3}" fill="#a8581a" opacity=".42" transform="rotate(${a*57.3} ${px} ${py})"/>`}
+  let bub='';pts(7,50,31,17).forEach(([x,y,r])=>{bub+=`<circle cx="${x}" cy="${y}" r="${3+r*3}" fill="#e0861a" opacity=".28"/><circle cx="${x-1.2}" cy="${y-1.2}" r="1.1" fill="#fff" opacity=".7"/>`});
+  const board=o.simple?'':`<circle cx="100" cy="104" r="96" fill="#000" opacity=".25"/><circle cx="100" cy="100" r="96" fill="url(#${id}b)" stroke="#5a3616" stroke-width="2"/>
+    <circle cx="100" cy="100" r="90.5" fill="none" stroke="#f0c48a" stroke-opacity=".5" stroke-width="1.4" stroke-dasharray="1.5 5" stroke-linecap="round"/>
+    <path d="M24 60Q50 40 80 36M120 168Q150 160 170 140M30 130Q40 150 60 164" fill="none" stroke="#6b4220" stroke-opacity=".22" stroke-width="2" stroke-linecap="round"/>`;
+  const pizza=`<circle cx="100" cy="104" r="83" fill="#000" opacity=".22"/>
+    <circle cx="100" cy="100" r="82" fill="url(#${id}c)" stroke="#a5591a" stroke-width="2.6"/>
+    <circle cx="100" cy="100" r="76.5" fill="none" stroke="#fff3cf" stroke-width="3" stroke-dasharray="20 38" stroke-linecap="round" opacity=".6" transform="rotate(-25 100 100)"/>${spots}
+    <circle cx="100" cy="100" r="68" fill="url(#${id}s)"/>
+    <path d="${blob(100,100,63,16,o.seed||5,3.5)}" fill="url(#${id}h)" stroke="#e8a02a" stroke-width="1.6"/>${bub}${inner}${cuts}`;
+  const body=o.simple?`<g transform="translate(100 100) scale(1.17) translate(-100 -100)">${pizza}</g>`:pizza;
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><defs>
+    <radialGradient id="${id}b" cx=".35" cy=".3" r=".95"><stop offset="0" stop-color="${bd[0]}"/><stop offset="1" stop-color="${bd[1]}"/></radialGradient>
+    <radialGradient id="${id}c" cx=".38" cy=".32" r=".85"><stop offset="0" stop-color="${cr[0]}"/><stop offset="1" stop-color="${cr[1]}"/></radialGradient>
+    <radialGradient id="${id}s" cx=".4" cy=".35" r=".85"><stop offset="0" stop-color="${sauce[0]}"/><stop offset="1" stop-color="${sauce[1]}"/></radialGradient>
+    <radialGradient id="${id}h" cx=".38" cy=".3" r=".85"><stop offset="0" stop-color="${ch[0]}"/><stop offset="1" stop-color="${ch[1]}"/></radialGradient>
+  </defs>${board}${body}${o.simple?'':deco+sp(28,26,5.5)+sp(172,174,5,'#fff3c4')+sp(186,100,3)}</svg>`}
+
+function art(kind,simple){
+  const P=pts;
+  switch(kind){
+  case 'margherita':{
+    let g='';
+    P(6,50,3,24).forEach(([x,y],i)=>g+=mozz(x,y,i));
+    P(6,52,5,22).forEach(([x,y])=>g+=tomato(x,y));
+    P(7,52,12,18).forEach(([x,y,r])=>g+=leaf(x,y,r*360));
+    return pizzaBase(g,leaf(8,170,-50,1.4)+leaf(24,186,-12,1.1)+tomato(178,28,1.3)+tomato(190,50,.8),{simple})}
+  case 'calabresa':{
+    let g='';
+    P(7,54,7,20).forEach(([x,y,r])=>g+=onion(x,y,r*180));
+    P(9,52,2,21).forEach(([x,y])=>g+=pep(x,y,1.08));
+    P(6,54,9,18).forEach(([x,y])=>g+=olive(x,y,1.1));
+    return pizzaBase(g,chili(8,176,-35,1)+chili(24,188,-5,.8)+pep(178,28,1.35)+olive(190,52,1.2),{simple})}
+  case 'queijos':{
+    let g='';
+    P(5,52,7,24).forEach(([x,y],i)=>g+=mozz(x,y,i+3,10.5));
+    P(6,50,4,22).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="9.6" fill="#ffe97a" stroke="#d9ad2b" stroke-width="1.5"/><circle cx="${x-3}" cy="${y-2}" r="1.8" fill="#eec23e"/><circle cx="${x+3}" cy="${y+3}" r="1.5" fill="#eec23e"/><circle cx="${x+2}" cy="${y-4}" r="1.1" fill="#eec23e"/><path d="M${x-7} ${y-3}A8 8 0 0 1 ${x-2} ${y-8}" stroke="#fff" stroke-opacity=".8" stroke-width="1.5" fill="none" stroke-linecap="round"/>`);
+    P(5,50,11,24).forEach(([x,y],i)=>g+=`<path d="${blob(x,y,9.5,8,i+9,2)}" fill="#f6f1dc" stroke="#d8cfa6" stroke-width="1.2"/><g fill="#5f9fc8"><ellipse cx="${x-3}" cy="${y-1}" rx="1.8" ry=".9"/><ellipse cx="${x+3}" cy="${y+2}" rx="1.6" ry=".9"/><ellipse cx="${x}" cy="${y+4}" rx="1.3" ry=".8"/></g>`);
+    P(11,56,6,12).forEach(([x,y,r])=>g+=`<path d="M${x-6} ${y}Q${x} ${y-6} ${x+6} ${y}" fill="none" stroke="#fff7c8" stroke-width="3.4" stroke-linecap="round" transform="rotate(${r*180} ${x} ${y})"/><path d="M${x-6} ${y}Q${x} ${y-6} ${x+6} ${y}" fill="none" stroke="#e9c85a" stroke-width=".9" stroke-linecap="round" transform="rotate(${r*180} ${x} ${y})"/>`);
+    return pizzaBase(g,wedge(4,168,-12,1.25)+leaf(178,30,-100,1.2)+leaf(188,50,-70,.9),{simple,seed:8})}
+  case 'portuguesa':{
+    let g='';
+    P(5,48,2,24).forEach(([x,y,r])=>g+=`<g transform="rotate(${r*180} ${x} ${y})"><rect x="${x-10.5}" y="${y-6.5}" width="21" height="13" rx="6" fill="#f7a6b3" stroke="#cf6d80" stroke-width="1.4"/><path d="M${x-6} ${y-2}H${x+5}" stroke="#ffd0d8" stroke-width="2" stroke-linecap="round"/></g>`);
+    P(3,44,4,28).forEach(([x,y],i)=>g+=`<path d="${blob(x,y,10.5,9,i+20,2.4)}" fill="#fffdf6" stroke="#e5d8b8" stroke-width="1.3"/><circle cx="${x}" cy="${y}" r="4.8" fill="#ffb400" stroke="#e08a00" stroke-width="1"/><circle cx="${x-1.6}" cy="${y-1.8}" r="1.3" fill="#fff" opacity=".85"/>`);
+    P(5,54,13,20).forEach(([x,y,r])=>g+=onion(x,y,r*180));
+    P(6,54,8,18).forEach(([x,y])=>g+=olive(x,y,1.1));
+    P(12,56,11,9).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="2.7" fill="#6cc04a" stroke="#3f8f2b" stroke-width=".8"/><circle cx="${x-.8}" cy="${y-.8}" r=".8" fill="#d8ffc0"/>`);
+    return pizzaBase(g,tomato(24,28,1.3)+olive(176,170,1.6)+leaf(8,170,-50,1.3)+onion(184,36,20),{simple,seed:11})}
+  case 'frango':{
+    let g='';
+    P(14,54,6,14).forEach(([x,y,r])=>g+=`<g transform="rotate(${r*180} ${x} ${y})"><path d="M${x-8} ${y+1}Q${x-2} ${y-8} ${x+4} ${y-2}T${x+10} ${y+2}" stroke="#b9772c" stroke-width="6.4" fill="none" stroke-linecap="round"/><path d="M${x-8} ${y+1}Q${x-2} ${y-8} ${x+4} ${y-2}T${x+10} ${y+2}" stroke="#f5d596" stroke-width="3.8" fill="none" stroke-linecap="round"/></g>`);
+    P(6,48,8,24).forEach(([x,y],i)=>g+=`<path d="${blob(x,y,8,8,i+40,1.8)}" fill="#fffdf5" stroke="#eadfc2" stroke-width="1.2"/><ellipse cx="${x-2.5}" cy="${y-2.5}" rx="2.6" ry="1.6" fill="#fff"/>`);
+    P(10,54,14,11).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="2.7" fill="#ffd93b" stroke="#d6a700" stroke-width=".8"/><circle cx="${x-.8}" cy="${y-.8}" r=".8" fill="#fff6b0"/>`);
+    P(18,57,3,7).forEach(([x,y,r])=>g+=`<ellipse cx="${x}" cy="${y}" rx="3.2" ry="1.3" fill="#3fae4a" transform="rotate(${r*180} ${x} ${y})"/>`);
+    return pizzaBase(g,leaf(8,170,-50,1.4)+tomato(24,28,1.2)+tomato(176,172,1.1)+leaf(176,30,-110,1.1),{simple,seed:14})}
+  case 'chocolate':{
+    let g='';
+    for(let i=0;i<5;i++){const y=44+i*15,d=`M${32+i*4} ${y}q14 -9 28 0t28 0t28 0`;g+=`<path d="${d}" fill="none" stroke="#fff1de" stroke-width="2.8" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#ff7aa2" stroke-width="1.6" stroke-linecap="round" transform="translate(0 5)"/>`}
+    P(4,46,13,26).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="6.5" fill="#fffaf2" stroke="#e8d3b8" stroke-width="1.2"/><path d="M${x-3} ${y+1}Q${x} ${y-4} ${x+3} ${y+1}" stroke="#e8d3b8" stroke-width="1.2" fill="none" stroke-linecap="round"/>`);
+    P(6,50,3,22).forEach(([x,y,r])=>g+=berry(x,y,1.1,r*40-20));
+    const cols=['#ff6b8a','#ffd93b','#5ec8ff','#8be36b','#ffffff','#c58bff'];
+    P(34,58,9,5).forEach(([x,y,r],i)=>g+=`<rect x="${x-2}" y="${y-.7}" width="4" height="1.5" rx=".75" fill="${cols[i%6]}" transform="rotate(${r*180} ${x} ${y})"/>`);
+    return pizzaBase(g,berry(22,30,1.6,-15)+berry(176,172,1.4,20)+leaf(8,168,-60,1.2)+sp(186,50,4,'#ff9db0'),{simple,seed:17,sauce:['#7a4424','#3a1e0e'],ch:['#9a6038','#4e2a15']})}
+  case 'banana':{
+    let g='';
+    for(let i=0;i<3;i++){const y=56+i*22,d=`M${40+i*3} ${y}q16 -10 32 0t32 0`;g+=`<path d="${d}" fill="none" stroke="#a85e12" stroke-width="3.6" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#f6b04c" stroke-width="1.6" stroke-linecap="round" transform="translate(0 -.6)"/>`}
+    P(9,52,5,20).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="9.4" fill="#fff0b0" stroke="#d9ae3f" stroke-width="2"/><circle cx="${x}" cy="${y}" r="6.4" fill="#ffe27a"/><circle cx="${x-1.8}" cy="${y-.5}" r=".9" fill="#7a5418"/><circle cx="${x+1.8}" cy="${y+1}" r=".9" fill="#7a5418"/><circle cx="${x}" cy="${y+2.6}" r=".8" fill="#7a5418"/><path d="M${x-6.5} ${y-3}A7 7 0 0 1 ${x-2} ${y-7}" stroke="#fff" stroke-opacity=".85" stroke-width="1.4" fill="none" stroke-linecap="round"/>`);
+    P(4,48,15,24).forEach(([x,y],i)=>g+=`<path d="${blob(x,y,5.5,7,i+60,1.5)}" fill="#b4783e" stroke="#7a4a1c" stroke-width="1"/><path d="M${x-2} ${y}Q${x} ${y-2} ${x+2} ${y}" stroke="#7a4a1c" stroke-width=".8" fill="none"/>`);
+    P(40,58,6,4).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="1.1" fill="#8b4a1c"/>`);
+    P(14,56,2,10).forEach(([x,y])=>g+=`<circle cx="${x}" cy="${y}" r="1.3" fill="#fff" opacity=".85"/>`);
+    return pizzaBase(g,banana(8,162,-25,1.1)+banana(142,162,35,.8)+leaf(176,30,-100,1.1)+sp(186,56,3.5,'#ffe27a'),{simple,seed:21,sauce:['#eebc66','#c98a2e'],ch:['#fff2c8','#f1c76a']})}
+  case 'refri':
+    return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="94" fill="#e0452f" opacity=".17"/><circle cx="100" cy="100" r="72" fill="#e0452f" opacity=".15"/>
+    <ellipse cx="100" cy="184" rx="46" ry="7" fill="#000" opacity=".3"/>
+    <path d="M80 72C80 60 90 56 90 46V36H110V46C110 56 120 60 120 72V170Q120 182 108 182H92Q80 182 80 170Z" fill="#3a1b0e" stroke="#1d0c05" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="86" y="24" width="28" height="14" rx="4" fill="#e0452f" stroke="#a82b1a" stroke-width="1.5"/><path d="M92 26V36M98 26V36M104 26V36M110 26V36" stroke="#a82b1a" stroke-width="1"/>
+    <rect x="81" y="98" width="38" height="48" fill="#e0452f"/><path d="M81 122Q90 112 100 122T119 122" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/><circle cx="100" cy="109" r="3" fill="#ffd54a"/><circle cx="100" cy="136" r="3" fill="#ffd54a"/>
+    <rect x="85" y="74" width="5" height="92" rx="2.5" fill="#fff" opacity=".28"/>
+    <g fill="none" stroke="#ff8a70" stroke-width="2" opacity=".85"><circle cx="150" cy="56" r="7"/><circle cx="164" cy="86" r="4.5"/><circle cx="42" cy="78" r="6"/><circle cx="52" cy="118" r="3.5"/><circle cx="46" cy="52" r="3"/></g>
+    ${citrus(150,148,18,'#8bd35a','#4f9a2c','#d9f7ae')}${leaf(34,160,-40,1.2)}${sp(32,30,5)}${sp(172,28,4,'#fff3c4')}</svg>`;
+  case 'suco':
+    return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="94" fill="#ff9f1c" opacity=".17"/><circle cx="100" cy="100" r="72" fill="#ff9f1c" opacity=".15"/>
+    <ellipse cx="100" cy="184" rx="52" ry="7" fill="#000" opacity=".3"/>
+    <path d="M58 64H142L132 168Q100 182 68 168Z" fill="#ff9f1c"/><path d="M58 64H142L140 88H60Z" fill="#ffd27a" opacity=".8"/>
+    <rect x="80" y="104" width="18" height="18" rx="4" fill="#fff" opacity=".4" transform="rotate(14 89 113)"/><rect x="106" y="126" width="16" height="16" rx="4" fill="#fff" opacity=".35" transform="rotate(-10 114 134)"/>
+    <path d="M58 64H142L132 168Q100 182 68 168Z" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M68 78L75 160" stroke="#fff" stroke-width="4.5" stroke-linecap="round" opacity=".5"/>
+    <path d="M114 22L102 130" stroke="#ff4d6d" stroke-width="6.5" stroke-linecap="round"/><path d="M114 22L102 130" stroke="#fff" stroke-width="2.4" stroke-dasharray="5 7" stroke-linecap="round"/>
+    ${citrus(142,66,22,'#ffa62b','#e07b00','#ffd98a')}
+    <circle cx="38" cy="150" r="21" fill="#ff9f1c" stroke="#d67600" stroke-width="2"/><path d="M26 140A16 16 0 0 1 38 132" stroke="#fff" stroke-opacity=".7" stroke-width="3" fill="none" stroke-linecap="round"/>${leaf(38,129,-50,1.1)}
+    ${drop(168,120,1.3)}${drop(176,146,.9)}${sp(30,40,5)}${sp(176,172,4,'#fff3c4')}</svg>`;
+  case 'agua':
+    return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="100" cy="100" r="94" fill="#3a9fe0" opacity=".17"/><circle cx="100" cy="100" r="72" fill="#3a9fe0" opacity=".15"/>
+    <ellipse cx="100" cy="184" rx="46" ry="7" fill="#000" opacity=".3"/>
+    <path d="M80 72C80 60 90 56 90 46V36H110V46C110 56 120 60 120 72V170Q120 182 108 182H92Q80 182 80 170Z" fill="#c6e8fa" stroke="#4aa3d6" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M81 146Q90 138 100 146T119 146V170Q119 181 108 181H92Q81 181 81 170Z" fill="#4fb0ee" opacity=".7"/>
+    <rect x="86" y="24" width="28" height="14" rx="4" fill="#2e86c1" stroke="#1f5f8c" stroke-width="1.5"/><path d="M92 26V36M98 26V36M104 26V36M110 26V36" stroke="#1f5f8c" stroke-width="1"/>
+    <rect x="81" y="90" width="38" height="34" fill="#fff" opacity=".95"/><path d="M81 112Q90 104 100 112T119 112" fill="none" stroke="#2e86c1" stroke-width="4" stroke-linecap="round"/>${drop(100,100,.8)}
+    <rect x="85" y="74" width="5" height="92" rx="2.5" fill="#fff" opacity=".6"/>
+    ${drop(150,60,1.5)}${drop(164,92,1)}${drop(44,70,1.2)}${drop(50,118,.8)}
+    ${citrus(150,150,17,'#ffe45c','#d4b400','#fff3a6')}${leaf(30,156,-40,1.2)}${leaf(42,170,-10,.9)}${sp(34,34,5,'#e6f6ff')}${sp(172,26,4,'#e6f6ff')}</svg>`;
+  default:{
+    let g='';
+    P(6,50,21,24).forEach(([x,y],i)=>g+=mozz(x,y,i+7));
+    P(5,52,15,22).forEach(([x,y])=>g+=tomato(x,y));
+    P(7,54,5,18).forEach(([x,y,r])=>g+=leaf(x,y,r*360));
+    P(5,54,9,18).forEach(([x,y])=>g+=olive(x,y,1.1));
+    return pizzaBase(g,leaf(8,170,-50,1.4)+tomato(178,28,1.3)+olive(188,52,1.2),{simple})}
+  }
+}
+const ARTS=[['','Automática'],['pizza','Pizza genérica'],['margherita','Margherita'],['calabresa','Calabresa'],['queijos','Queijos'],['portuguesa','Portuguesa'],['frango','Frango com catupiry'],['chocolate','Chocolate com morango'],['banana','Banana com canela'],['refri','Refrigerante'],['suco','Suco'],['agua','Água']];
+function artKind(it){
+  if(it.art)return it.art;const n=((it.nome||'')+' '+(it.cat||'')).toLowerCase();
+  if(/margher/.test(n))return 'margherita';if(/calabre|pepperoni/.test(n))return 'calabresa';if(/queijo|chees/.test(n))return 'queijos';
+  if(/portug/.test(n))return 'portuguesa';if(/frango|catupiry/.test(n))return 'frango';if(/chocolate|brigadeiro|morango/.test(n))return 'chocolate';
+  if(/banana|canela/.test(n))return 'banana';if(/suco|laranja|lim[aã]o/.test(n))return 'suco';if(/[áa]gua/.test(n))return 'agua';
+  if(/refri|coca|guaran|fanta|bebida/.test(n))return 'refri';if(/doce/.test(n))return 'chocolate';return 'pizza'}
+function artHTML(it){return art(artKind(it))+(it.img?`<img src="${esc(it.img)}" alt="${esc(it.nome)}" loading="lazy" onerror="this.remove()">`:'')}
+
+/* ============ "banco de dados" (localStorage) ============ */
+const KEY='pizzaria_db_v2';
+const defaultDB=()=>({
+  config:{nome:'Bella Massa',slogan:'Massa de fermentação lenta, ingredientes selecionados e entrega quentinha na sua porta.',telefone:'(17) 99111-0222',whatsapp:'5517991110222',endereco:'Rua das Flores, 123 - Centro',horario:'Ter a Dom, das 18h às 23h30',tempo:'40-55 min',taxa:6,minimo:30,aberto:true},
+  menu:[
+    {id:'i1',nome:'Margherita',desc:'Molho de tomate artesanal, muçarela, tomate fatiado e manjericão fresco.',cat:'Pizzas Salgadas',preco:0,opcoes:[{n:'Média',p:42},{n:'Grande',p:56}],img:'',art:'',ativo:true},
+    {id:'i2',nome:'Calabresa',desc:'Muçarela, calabresa fatiada, cebola roxa e azeitonas pretas.',cat:'Pizzas Salgadas',preco:0,opcoes:[{n:'Média',p:40},{n:'Grande',p:54}],img:'',art:'',ativo:true},
+    {id:'i3',nome:'Quatro Queijos',desc:'Muçarela, provolone, gorgonzola e parmesão ralado na hora.',cat:'Pizzas Salgadas',preco:0,opcoes:[{n:'Média',p:48},{n:'Grande',p:62}],img:'',art:'',ativo:true},
+    {id:'i4',nome:'Portuguesa',desc:'Muçarela, presunto, ovos, cebola, ervilha e azeitonas.',cat:'Pizzas Salgadas',preco:0,opcoes:[{n:'Média',p:46},{n:'Grande',p:60}],img:'',art:'',ativo:true},
+    {id:'i5',nome:'Frango com Catupiry',desc:'Frango desfiado temperado com catupiry original e orégano.',cat:'Pizzas Salgadas',preco:0,opcoes:[{n:'Média',p:46},{n:'Grande',p:60}],img:'',art:'',ativo:true},
+    {id:'i6',nome:'Chocolate com Morango',desc:'Chocolate cremoso, morangos frescos e calda de chocolate.',cat:'Pizzas Doces',preco:0,opcoes:[{n:'Média',p:44},{n:'Grande',p:58}],img:'',art:'',ativo:true},
+    {id:'i7',nome:'Banana com Canela',desc:'Banana fatiada, açúcar mascavo e canela.',cat:'Pizzas Doces',preco:0,opcoes:[{n:'Média',p:38},{n:'Grande',p:50}],img:'',art:'',ativo:true},
+    {id:'i8',nome:'Refrigerante 2L',desc:'Cola, guaraná ou laranja. Gelado.',cat:'Bebidas',preco:14,opcoes:[],img:'',art:'',ativo:true},
+    {id:'i9',nome:'Suco Natural 500ml',desc:'Laranja ou limão, feito na hora.',cat:'Bebidas',preco:9,opcoes:[],img:'',art:'',ativo:true},
+    {id:'i10',nome:'Água Mineral',desc:'Com ou sem gás, 500ml.',cat:'Bebidas',preco:4,opcoes:[],img:'',art:'',ativo:true}
+  ],
+  orders:[],seq:0,
+  users:[
+    {user:'dono',nome:'Dono',papel:'dono',senha:hash('dono123')},
+    {user:'funcionario',nome:'Funcionário',papel:'funcionario',senha:hash('func123')}
+  ]
+});
+let DB=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}const d=defaultDB();try{localStorage.setItem(KEY,JSON.stringify(d))}catch(e){}return d}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){alert('Sem espaço no navegador. Use fotos menores ou remova algumas.')}}
+function reload(){try{const r=JSON.parse(localStorage.getItem(KEY));if(r)DB=r}catch(e){}}
+
+/* ============ roteamento ============ */
+function route(){
+  const adm=location.hash==='#admin';
+  $('loja').hidden=adm;$('admin').hidden=!adm;closeModal();
+  if(adm){window.scrollTo(0,0);renderAdmin()}else renderLoja();
+}
+window.addEventListener('hashchange',route);
+
+/* ============ LOJA ============ */
+let cart=[];try{cart=JSON.parse(localStorage.getItem('pz_cart')||'[]')}catch(e){}
+const saveCart=()=>{localStorage.setItem('pz_cart',JSON.stringify(cart));updCartN()};
+const updCartN=()=>{const n=cart.reduce((a,c)=>a+c.qtd,0);const e=$('cartN');if(e)e.textContent=n};
+let io=null;
+function renderLoja(){
+  reload();const c=DB.config;document.title=c.nome+' • Pizzaria';
+  $('lNome').textContent=c.nome;$('hTitle').textContent=c.nome;$('lSlogan').textContent=c.slogan;
+  $('logo').innerHTML=art('margherita',true);$('heroPizza').innerHTML=art('margherita');
+  $('barInfo').textContent='🕒 '+c.horario;
+  $('fTempo').textContent=c.tempo;$('fTaxa').textContent=fmt(c.taxa);$('fMin').textContent=fmt(c.minimo);
+  const s=$('lStatus');s.className='badge '+(c.aberto?'on':'off');s.textContent=c.aberto?'● Aberto agora':'● Fechado no momento';
+  const cats=[...new Set(DB.menu.map(i=>i.cat))];
+  $('chips').innerHTML=cats.map((k,i)=>`<a href="#" onclick="goTo('cat${i}');return false">${esc(k)}</a>`).join('');
+  $('menu').innerHTML=cats.map((k,i)=>`<h2 class="cat" id="cat${i}">${esc(k)}</h2><div class="grid">${DB.menu.filter(x=>x.cat===k).map(cardItem).join('')}</div>`).join('')||'<p class="empty">Cardápio em breve.</p>';
+  $('footG').innerHTML=`<div><h4>${esc(c.nome)}</h4><p>${esc(c.slogan)}</p></div>
+    <div><h4>Contato</h4><p>📍 ${esc(c.endereco)}</p><p>📞 ${esc(c.telefone)}</p>${c.whatsapp?`<a class="btn ok sm zap" target="_blank" rel="noopener" href="https://wa.me/${esc(c.whatsapp)}">Chamar no WhatsApp</a>`:''}</div>
+    <div><h4>Funcionamento</h4><p>🕒 ${esc(c.horario)}</p><p>🛵 Entrega em ${esc(c.tempo)}</p><p>💵 Pagamento na entrega</p></div>`;
+  $('copyN').textContent='© '+new Date().getFullYear()+' '+c.nome;
+  $('btnMeu').hidden=!localStorage.getItem('pz_last');updCartN();
+  const els=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){if(io)io.disconnect();io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08});els.forEach(e=>io.observe(e))}
+  else els.forEach(e=>e.classList.add('in'));
+}
+function cardItem(it){
+  const tem=it.opcoes&&it.opcoes.length;
+  return `<div class="dish reveal ${it.ativo?'':'off'}">
+    <div class="imgbox">${it.ativo?'':'<span class="soldout">ESGOTADO</span>'}${artHTML(it)}</div>
+    <div class="dbody"><h3>${esc(it.nome)}</h3><p>${esc(it.desc)}</p>
+    <div class="dfoot">
+      ${tem?`<select id="sel-${it.id}">${it.opcoes.map((o,k)=>`<option value="${k}">${esc(o.n)} — ${fmt(o.p)}</option>`).join('')}</select>`:`<span class="price">${fmt(it.preco)}</span>`}
+      ${it.ativo?`<button class="btn gold sm" onclick="addCart('${it.id}')">Adicionar</button>`:''}
+    </div></div></div>`;
+}
+function addCart(id){
+  const it=DB.menu.find(x=>x.id===id);if(!it||!it.ativo)return;
+  let k=0,preco=it.preco,opc='';
+  if(it.opcoes&&it.opcoes.length){k=+$('sel-'+id).value;preco=it.opcoes[k].p;opc=it.opcoes[k].n}
+  const key=id+'|'+k;const f=cart.find(c=>c.key===key);
+  if(f)f.qtd++;else cart.push({key,id,nome:it.nome,opc,preco,qtd:1});
+  saveCart();toast('✔ '+it.nome+' adicionada ao carrinho');
+}
+function syncCart(){
+  reload();
+  cart=cart.filter(c=>{const it=DB.menu.find(x=>x.id===c.id);if(!it||!it.ativo)return false;
+    const k=+c.key.split('|')[1];
+    if(it.opcoes&&it.opcoes.length){if(!it.opcoes[k])return false;c.preco=it.opcoes[k].p}else c.preco=it.preco;return true});
+  saveCart();
+}
+const sub=()=>cart.reduce((a,c)=>a+c.preco*c.qtd,0);
+function abrirCarrinho(){
+  syncCart();
+  if(!cart.length){modal('<h3>🛒 Seu carrinho</h3><p class="empty">Seu carrinho está vazio.<br>Escolha uma pizza deliciosa!</p><button class="btn gold big" onclick="closeModal();goTo(\'cardapio\')">Ver cardápio</button>',false);return}
+  const c=DB.config;
+  modal(`<h3>🛒 Seu carrinho</h3>
+    ${cart.map(i=>{const it=DB.menu.find(x=>x.id===i.id);return `<div class="crow"><div class="mini">${artHTML(it)}</div><div class="t"><b>${esc(i.nome)}</b>${i.opc?` <small>(${esc(i.opc)})</small>`:''}<br><small>${fmt(i.preco)}</small></div>
+      <div class="qty"><button onclick="qty('${i.key}',-1)">−</button><b>${i.qtd}</b><button onclick="qty('${i.key}',1)">+</button></div></div>`}).join('')}
+    <div class="tot"><div><span>Subtotal</span><span>${fmt(sub())}</span></div><div><span>Taxa de entrega</span><span>${fmt(c.taxa)}</span></div><div class="g"><span>Total</span><span>${fmt(sub()+c.taxa)}</span></div></div>
+    ${sub()<c.minimo?`<div class="note">Pedido mínimo: ${fmt(c.minimo)} (sem a taxa de entrega).</div>`:''}
+    <button class="btn big" onclick="checkout()">Finalizar pedido</button>
+    <button class="btn gray big" style="margin-top:8px" onclick="closeModal()">Continuar escolhendo</button>`,false);
+}
+function qty(key,d){const c=cart.find(x=>x.key===key);if(!c)return;c.qtd+=d;if(c.qtd<=0)cart=cart.filter(x=>x!==c);saveCart();abrirCarrinho()}
+function checkout(){
+  reload();const c=DB.config;
+  if(!c.aberto){alert('A pizzaria está fechada no momento. Horário: '+c.horario);return}
+  if(sub()<c.minimo){alert('O pedido mínimo é '+fmt(c.minimo));return}
+  const last=JSON.parse(localStorage.getItem('pz_cli')||'{}');
+  modal(`<h3>Finalizar pedido</h3>
+    <div class="note">💵 O pagamento é feito <b>somente na entrega</b>. Nada é cobrado agora.</div>
+    <form onsubmit="enviarPedido(event)">
+      <label>Seu nome<input name="nome" required value="${esc(last.nome)}"></label>
+      <label>Telefone / WhatsApp<input name="tel" required inputmode="tel" value="${esc(last.tel)}"></label>
+      <label>Rua e número<input name="rua" required value="${esc(last.rua)}"></label>
+      <div class="row"><label>Bairro<input name="bairro" required value="${esc(last.bairro)}"></label><label>Complemento<input name="comp" value="${esc(last.comp)}"></label></div>
+      <label>Forma de pagamento (na entrega)
+        <select name="pag" onchange="$('trocoBox').hidden=this.value!=='Dinheiro'">
+          <option value="Dinheiro">Dinheiro</option><option value="Pix na entrega">Pix na entrega</option>
+          <option value="Cartão de débito">Cartão de débito</option><option value="Cartão de crédito">Cartão de crédito</option></select></label>
+      <label id="trocoBox">Troco para quanto? (opcional)<input name="troco" inputmode="decimal" placeholder="Ex.: 100"></label>
+      <label>Observações<textarea name="obs" rows="2" placeholder="Ex.: sem cebola, tocar o interfone..."></textarea></label>
+      <div class="tot"><div><span>Subtotal</span><span>${fmt(sub())}</span></div><div><span>Taxa de entrega</span><span>${fmt(c.taxa)}</span></div><div class="g"><span>Total a pagar na entrega</span><span>${fmt(sub()+c.taxa)}</span></div></div>
+      <button class="btn big">Confirmar pedido</button>
+      <button type="button" class="btn gray big" style="margin-top:8px" onclick="abrirCarrinho()">Voltar</button>
+    </form>`,false);
+}
+function enviarPedido(e){
+  e.preventDefault();reload();const c=DB.config;
+  if(!c.aberto){alert('A pizzaria acabou de fechar.');return}
+  syncCart();if(!cart.length||sub()<c.minimo){alert('Revise seu carrinho.');return}
+  const f=Object.fromEntries(new FormData(e.target));
+  localStorage.setItem('pz_cli',JSON.stringify({nome:f.nome,tel:f.tel,rua:f.rua,bairro:f.bairro,comp:f.comp}));
+  DB.seq=(DB.seq||0)+1;
+  const o={id:'o'+Date.now(),num:DB.seq,criado:Date.now(),status:'novo',
+    cliente:{nome:f.nome.trim(),tel:f.tel.trim(),rua:f.rua.trim(),bairro:f.bairro.trim(),comp:(f.comp||'').trim()},
+    obs:(f.obs||'').trim(),pag:f.pag,troco:f.pag==='Dinheiro'?toNum(f.troco):0,
+    itens:cart.map(i=>({nome:i.nome,opc:i.opc,preco:i.preco,qtd:i.qtd})),sub:sub(),taxa:c.taxa,total:sub()+c.taxa};
+  DB.orders.push(o);save();localStorage.setItem('pz_last',o.id);
+  cart=[];saveCart();renderLoja();mostrarConfirmacao(o);
+}
+function textoZap(o){
+  const l=[`*Novo pedido #${o.num}* - ${DB.config.nome}`,'',...o.itens.map(i=>`${i.qtd}x ${i.nome}${i.opc?' ('+i.opc+')':''} - ${fmt(i.preco*i.qtd)}`),'',
+    `Subtotal: ${fmt(o.sub)}`,`Entrega: ${fmt(o.taxa)}`,`*Total: ${fmt(o.total)}*`,`Pagamento na entrega: ${o.pag}${o.troco?' (troco para '+fmt(o.troco)+')':''}`,'',
+    `Cliente: ${o.cliente.nome} - ${o.cliente.tel}`,`Endereço: ${o.cliente.rua}, ${o.cliente.bairro}${o.cliente.comp?' - '+o.cliente.comp:''}`];
+  if(o.obs)l.push('Obs: '+o.obs);return l.join('\n');
+}
+function mostrarConfirmacao(o){
+  const st=ST[o.status];
+  modal(`<div style="text-align:center"><div style="width:120px;margin:0 auto 6px">${art('margherita')}</div><h3>Pedido #${o.num} recebido!</h3>
+    <p>Status: <span class="st" style="background:${st[1]}">${st[0]}</span></p>
+    <p>Total a pagar na entrega: <b>${fmt(o.total)}</b><br><small>${esc(o.pag)}${o.troco?' • troco para '+fmt(o.troco):''}</small></p>
+    <p style="color:var(--mut);font-size:.9rem">Previsão de entrega: ${esc(DB.config.tempo)}</p></div>
+    <a class="btn ok big" style="display:block;text-align:center;text-decoration:none" target="_blank" rel="noopener" href="https://wa.me/${esc(DB.config.whatsapp)}?text=${encodeURIComponent(textoZap(o))}">📲 Enviar pedido pelo WhatsApp</a>
+    <button class="btn gray big" style="margin-top:8px" onclick="closeModal()">Fechar</button>`);
+}
+function meuPedido(){
+  reload();const o=DB.orders.find(x=>x.id===localStorage.getItem('pz_last'));
+  if(!o){toast('Nenhum pedido encontrado neste aparelho');return}mostrarConfirmacao(o);
+}
+
+/* ============ ADMIN ============ */
+const ST={novo:['Novo','#e67e22'],preparo:['Em preparo','#2980b9'],entrega:['Saiu para entrega','#8e44ad'],entregue:['Entregue','#27ae60'],cancelado:['Cancelado','#7f8c8d']};
+const NEXT={novo:['preparo','Aceitar e preparar'],preparo:['entrega','Saiu para entrega'],entrega:['entregue','Marcar como entregue']};
+let sess=sessionStorage.getItem('pz_sess'),tab='pedidos',filtro='ativos',lastNovos=-1;
+const me=()=>DB.users.find(u=>u.user===sess);
+function needDono(){const u=me();if(!u||u.papel!=='dono'){alert('Apenas o dono pode fazer isso.');return false}return true}
+
+function renderAdmin(){reload();if(!me()){sess=null;sessionStorage.removeItem('pz_sess');renderLogin();return}renderPanel()}
+function renderLogin(){
+  $('admin').innerHTML=`<div class="wrap"><form class="card login" onsubmit="doLogin(event)">
+    <div style="width:84px;margin:0 auto 6px">${art('margherita')}</div>
+    <h2 style="margin:0 0 4px;text-align:center;font-family:var(--serif)">Área restrita</h2>
+    <p style="color:var(--mut);margin:0 0 16px;text-align:center">Acesso do dono e dos funcionários.</p>
+    <label>Usuário<input name="u" autocomplete="username" required></label>
+    <label>Senha<input name="p" type="password" autocomplete="current-password" required></label>
+    <div class="err" id="loginErr"></div>
+    <button class="btn big">Entrar</button>
+    <p style="text-align:center;margin-bottom:0"><a href="#" onclick="location.hash='';return false" style="color:var(--mut)">← Voltar para a loja</a></p>
+  </form></div>`;
+}
+function doLogin(e){
+  e.preventDefault();reload();const f=Object.fromEntries(new FormData(e.target));
+  const u=DB.users.find(x=>x.user===f.u.trim().toLowerCase()&&x.senha===hash(f.p));
+  if(!u){$('loginErr').textContent='Usuário ou senha incorretos.';return}
+  sess=u.user;sessionStorage.setItem('pz_sess',sess);tab='pedidos';lastNovos=-1;renderPanel();
+}
+function logout(){sess=null;sessionStorage.removeItem('pz_sess');renderLogin()}
+function renderPanel(){
+  const u=me(),dono=u.papel==='dono';
+  const tabs=dono?[['pedidos','Pedidos'],['cardapio','Cardápio'],['resumo','Resumo'],['equipe','Equipe'],['config','Configurações']]:[['pedidos','Pedidos'],['cardapio','Disponibilidade']];
+  if(!tabs.some(t=>t[0]===tab))tab='pedidos';
+  const fraca=u.senha===hash('dono123')||u.senha===hash('func123');const c=DB.config;
+  $('admin').innerHTML=`<div class="adm-head"><div class="wrap">
+      <div class="t">🍕 ${esc(c.nome)} <span class="role">${dono?'DONO':'FUNCIONÁRIO'}</span> <small style="opacity:.6;font-family:var(--sans);font-weight:400">${esc(u.nome)}</small></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <label class="sw" style="margin:0;color:#f4eadb"><input type="checkbox" ${c.aberto?'checked':''} onchange="toggleAberto(this.checked)"> Loja ${c.aberto?'aberta':'fechada'}</label>
+        <button class="btn gray sm" onclick="minhaSenha()">Minha senha</button>
+        <button class="btn gray sm" onclick="location.hash=''">Ver loja</button>
+        <button class="btn sm" onclick="logout()">Sair</button>
+      </div></div></div>
+    <div class="wrap" style="padding-bottom:40px">
+      ${fraca?`<div class="note" style="margin-top:16px">⚠️ Você ainda está usando a senha padrão. Clique em <b>Minha senha</b> e troque agora.</div>`:''}
+      <div class="tabs">${tabs.map(t=>`<button class="${tab===t[0]?'on':''}" onclick="tab='${t[0]}';renderPanel()">${t[1]}</button>`).join('')}</div>
+      ${tab==='pedidos'?tabPedidos():tab==='cardapio'?tabCardapio(dono):tab==='resumo'?tabResumo(dono):tab==='equipe'?tabEquipe(dono):tabConfig(dono)}
+    </div>`;
+  if(tab==='pedidos')lastNovos=DB.orders.filter(o=>o.status==='novo').length;
+}
+function toggleAberto(v){reload();DB.config.aberto=v;save();renderPanel()}
+
+function tabPedidos(){
+  const cnt=s=>DB.orders.filter(o=>s==='ativos'?['novo','preparo','entrega'].includes(o.status):s==='todos'?true:o.status===s).length;
+  const fl=[['ativos','Em andamento'],['entregue','Entregues'],['cancelado','Cancelados'],['todos','Todos']];
+  return `<div class="tabs" style="margin-top:0">${fl.map(f=>`<button class="${filtro===f[0]?'on':''}" onclick="filtro='${f[0]}';renderPanel()">${f[1]} (${cnt(f[0])})</button>`).join('')}</div>${listaPedidos()}`;
+}
+function listaPedidos(){
+  let l=DB.orders.slice().reverse();
+  if(filtro==='ativos')l=l.filter(o=>['novo','preparo','entrega'].includes(o.status));else if(filtro!=='todos')l=l.filter(o=>o.status===filtro);
+  return l.length?l.map(cardPedido).join(''):'<p class="empty" style="color:var(--mut)">Nenhum pedido aqui.</p>';
+}
+function cardPedido(o){
+  const st=ST[o.status],nx=NEXT[o.status],cl=o.cliente;
+  return `<div class="card"><div class="ped-h"><b style="font-family:var(--serif);font-size:1.15rem">Pedido #${o.num}</b><span><small>${new Date(o.criado).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</small> <span class="st" style="background:${st[1]}">${st[0]}</span></span></div>
+    <p style="margin:8px 0 4px"><b>${esc(cl.nome)}</b> • ${esc(cl.tel)}<br>📍 ${esc(cl.rua)}, ${esc(cl.bairro)}${cl.comp?' - '+esc(cl.comp):''}</p>
+    <ul style="margin:6px 0;padding-left:20px">${o.itens.map(i=>`<li>${i.qtd}x ${esc(i.nome)}${i.opc?' ('+esc(i.opc)+')':''} — ${fmt(i.preco*i.qtd)}</li>`).join('')}</ul>
+    ${o.obs?`<p style="margin:4px 0"><b>Obs:</b> ${esc(o.obs)}</p>`:''}
+    <p style="margin:4px 0">💵 Cobrar na entrega: <b>${fmt(o.total)}</b> (${esc(o.pag)}${o.troco?' • troco para '+fmt(o.troco)+' → devolver '+fmt(Math.max(0,o.troco-o.total)):''}) <small>— taxa de entrega ${fmt(o.taxa)} inclusa</small></p>
+    <div class="acts">${nx?`<button class="btn sm" onclick="setStatus('${o.id}','${nx[0]}')">${nx[1]}</button>`:''}
+      ${nx?`<button class="btn sec sm" onclick="setStatus('${o.id}','cancelado')">Cancelar</button>`:''}
+      <button class="btn gray sm" onclick="imprimir('${o.id}')">🖨 Imprimir</button></div></div>`;
+}
+function setStatus(id,s){reload();const o=DB.orders.find(x=>x.id===id);if(!o)return;if(s==='cancelado'&&!confirm('Cancelar este pedido?'))return;o.status=s;save();renderPanel()}
+function imprimir(id){
+  const o=DB.orders.find(x=>x.id===id);if(!o)return;const cl=o.cliente;
+  const w=window.open('','_blank','width=380,height=600');if(!w)return alert('Libere pop-ups para imprimir.');
+  w.document.write(`<pre style="font:14px monospace;white-space:pre-wrap">${esc(DB.config.nome)}\nPEDIDO #${o.num}  ${new Date(o.criado).toLocaleString('pt-BR')}\n--------------------------------\n${o.itens.map(i=>`${i.qtd}x ${i.nome}${i.opc?' ('+i.opc+')':''}  ${fmt(i.preco*i.qtd)}`).join('\n')}\n--------------------------------\nSubtotal: ${fmt(o.sub)}\nEntrega:  ${fmt(o.taxa)}\nTOTAL:    ${fmt(o.total)}\nPagar na entrega: ${o.pag}${o.troco?'\nTroco para: '+fmt(o.troco):''}\n--------------------------------\n${cl.nome} - ${cl.tel}\n${cl.rua}, ${cl.bairro}${cl.comp?' - '+cl.comp:''}${o.obs?'\nObs: '+o.obs:''}</pre>`);
+  w.document.close();w.focus();w.print();
+}
+function beep(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[0,.25].forEach(t=>{const o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=880;g.gain.value=.15;o.start(a.currentTime+t);o.stop(a.currentTime+t+.15)})}catch(e){}}
+function poll(){
+  if($('admin').hidden||!me()||tab!=='pedidos')return;
+  const antes=JSON.stringify(DB.orders);reload();if(JSON.stringify(DB.orders)===antes)return;
+  const n=DB.orders.filter(o=>o.status==='novo').length;
+  if(lastNovos>=0&&n>lastNovos){beep();toast('🔔 Novo pedido recebido!')}renderPanel();
+}
+setInterval(poll,5000);
+window.addEventListener('storage',e=>{if(e.key===KEY)poll()});
+
+/* --- cardápio --- */
+function tabCardapio(dono){
+  const cats=[...new Set(DB.menu.map(i=>i.cat))];
+  return `${dono?`<button class="btn" onclick="formItem()">+ Novo item</button>`:`<div class="note">Marque como esgotado o que acabou. Preços e itens só o dono altera.</div>`}
+    ${cats.map(k=>`<h3 style="margin:20px 0 6px;font-family:var(--serif)">${esc(k)}</h3><div class="card" style="padding:4px 16px">${DB.menu.filter(i=>i.cat===k).map(i=>`
+      <div class="mrow"><div class="mini">${artHTML(i)}</div>
+        <div class="n"><b>${esc(i.nome)}</b><br><small style="color:var(--mut)">${i.opcoes&&i.opcoes.length?i.opcoes.map(o=>esc(o.n)+' '+fmt(o.p)).join(' • '):fmt(i.preco)}</small></div>
+        <label class="sw" style="margin:0"><input type="checkbox" ${i.ativo?'checked':''} onchange="toggleItem('${i.id}',this.checked)"> ${i.ativo?'Disponível':'Esgotado'}</label>
+        ${dono?`<button class="btn gray sm" onclick="formItem('${i.id}')">Editar</button><button class="btn sec sm" onclick="delItem('${i.id}')">Excluir</button>`:''}
+      </div>`).join('')}</div>`).join('')||'<p class="empty">Nenhum item cadastrado.</p>'}`;
+}
+function toggleItem(id,v){reload();const i=DB.menu.find(x=>x.id===id);if(i){i.ativo=v;save();renderPanel()}}
+function delItem(id){if(!needDono())return;if(!confirm('Excluir este item do cardápio?'))return;reload();DB.menu=DB.menu.filter(x=>x.id!==id);save();renderPanel()}
+function formItem(id){
+  if(!needDono())return;
+  const it=id?DB.menu.find(x=>x.id===id):{nome:'',desc:'',cat:'',preco:0,opcoes:[],img:'',art:'',ativo:true};
+  const cats=[...new Set(DB.menu.map(i=>i.cat))];const isData=(it.img||'').startsWith('data:');
+  modal(`<h3>${id?'Editar':'Novo'} item</h3><form onsubmit="saveItem(event,'${id||''}')">
+    <label>Nome<input name="nome" required value="${esc(it.nome)}"></label>
+    <label>Descrição<textarea name="desc" rows="2">${esc(it.desc)}</textarea></label>
+    <label>Categoria<input name="cat" required list="catList" value="${esc(it.cat)}" placeholder="Ex.: Pizzas Salgadas"><datalist id="catList">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></label>
+    <label>Preço (use se o item não tiver tamanhos)<input name="preco" inputmode="decimal" value="${String(it.preco||0).replace('.',',')}"></label>
+    <label>Tamanhos com preço (opcional) — formato Nome:Preço; Nome:Preço<input name="opcoes" value="${esc((it.opcoes||[]).map(o=>o.n+':'+String(o.p).replace('.',',')).join('; '))}" placeholder="Média:42; Grande:56"></label>
+    <div class="foto"><div class="prev" id="fotoPrev">${it.img?`<img src="${esc(it.img)}">`:'Sem foto'}</div>
+      <div style="flex:1"><label style="margin-bottom:6px">Foto do produto<input type="file" accept="image/*" onchange="lerFoto(this.files[0])"></label>
+      <button type="button" class="btn gray sm" onclick="tirarFoto()">Remover foto</button></div></div>
+    <input type="hidden" name="imgData" id="imgData" value="${isData?esc(it.img):''}">
+    <label>Ou link de uma imagem (opcional)<input name="imgUrl" id="imgUrl" value="${isData?'':esc(it.img)}" placeholder="https://..."></label>
+    <label>Ilustração (usada quando não há foto)<select name="art">${ARTS.map(a=>`<option value="${a[0]}" ${(it.art||'')===a[0]?'selected':''}>${a[1]}</option>`).join('')}</select></label>
+    <label class="sw"><input type="checkbox" name="ativo" ${it.ativo?'checked':''}> Disponível para venda</label>
+    <button class="btn big">Salvar</button></form>`);
+}
+function lerFoto(file){
+  if(!file)return;const r=new FileReader();
+  r.onload=()=>{const im=new Image();
+    im.onload=()=>{const m=640,s=Math.min(1,m/Math.max(im.width,im.height));const cv=document.createElement('canvas');cv.width=Math.round(im.width*s);cv.height=Math.round(im.height*s);
+      cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);const d=cv.toDataURL('image/jpeg',.78);
+      $('imgData').value=d;$('imgUrl').value='';$('fotoPrev').innerHTML=`<img src="${d}">`};
+    im.onerror=()=>alert('Não foi possível ler essa imagem.');im.src=r.result};
+  r.readAsDataURL(file);
+}
+function tirarFoto(){$('imgData').value='';$('imgUrl').value='';$('fotoPrev').textContent='Sem foto'}
+function saveItem(e,id){
+  e.preventDefault();if(!needDono())return;reload();const f=new FormData(e.target);
+  const opcoes=String(f.get('opcoes')||'').split(';').map(s=>s.trim()).filter(Boolean).map(s=>{const [n,p]=s.split(':');return {n:(n||'').trim(),p:toNum(p)}}).filter(o=>o.n);
+  const d={nome:f.get('nome').trim(),desc:f.get('desc').trim(),cat:f.get('cat').trim(),preco:toNum(f.get('preco')),opcoes,img:(f.get('imgData')||f.get('imgUrl')||'').trim(),art:f.get('art')||'',ativo:!!f.get('ativo')};
+  if(!opcoes.length&&d.preco<=0){alert('Informe um preço ou os tamanhos com preço.');return}
+  if(id){Object.assign(DB.menu.find(x=>x.id===id),d)}else DB.menu.push({id:'i'+Date.now(),...d});
+  save();closeModal();renderPanel();toast('Cardápio atualizado');
+}
+
+/* --- resumo --- */
+function tabResumo(dono){
+  if(!dono)return '';
+  const ok=DB.orders.filter(o=>o.status!=='cancelado');const h0=new Date().setHours(0,0,0,0),d7=h0-6*864e5;
+  const soma=l=>l.reduce((a,o)=>a+o.total,0);const hoje=ok.filter(o=>o.criado>=h0),sem=ok.filter(o=>o.criado>=d7);
+  const top={};ok.forEach(o=>o.itens.forEach(i=>top[i.nome]=(top[i.nome]||0)+i.qtd));
+  const tl=Object.entries(top).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  return `<div class="grid3">
+    <div class="stat">Vendas hoje<b>${fmt(soma(hoje))}</b>${hoje.length} pedido(s)</div>
+    <div class="stat">Últimos 7 dias<b>${fmt(soma(sem))}</b>${sem.length} pedido(s)</div>
+    <div class="stat">Ticket médio<b>${fmt(ok.length?soma(ok)/ok.length:0)}</b>${ok.length} pedido(s) no total</div>
+    <div class="stat">Cancelados<b>${DB.orders.filter(o=>o.status==='cancelado').length}</b>no total</div></div>
+    <h3 style="font-family:var(--serif)">Mais vendidos</h3><div class="card">${tl.length?tl.map(t=>`<div class="mrow"><span class="n">${esc(t[0])}</span><b>${t[1]} un.</b></div>`).join(''):'<p class="empty" style="color:var(--mut)">Sem vendas ainda.</p>'}</div>`;
+}
+
+/* --- equipe --- */
+function tabEquipe(dono){
+  if(!dono)return '';
+  return `<div class="card"><h3 style="margin-top:0;font-family:var(--serif)">Adicionar funcionário</h3>
+    <form onsubmit="addUser(event)"><div class="row"><label>Nome<input name="nome" required></label><label>Usuário (login)<input name="user" required pattern="[a-z0-9_]{3,}" title="Letras minúsculas, números e _ (mín. 3)"></label></div>
+    <label>Senha (mín. 4 caracteres)<input name="senha" type="password" minlength="4" required></label><button class="btn">Adicionar</button></form></div>
+    <h3 style="font-family:var(--serif)">Contas</h3><div class="card" style="padding:4px 16px">${DB.users.map(u=>`<div class="mrow"><div class="n"><b>${esc(u.nome)}</b> <small>(${esc(u.user)})</small> <span class="role" style="background:${u.papel==='dono'?'var(--gold)':'#d5dbdb'}">${u.papel==='dono'?'DONO':'FUNCIONÁRIO'}</span></div>
+      <button class="btn gray sm" onclick="resetSenha('${u.user}')">Nova senha</button>
+      ${u.papel!=='dono'?`<button class="btn sec sm" onclick="delUser('${u.user}')">Remover</button>`:''}</div>`).join('')}</div>`;
+}
+function addUser(e){
+  e.preventDefault();if(!needDono())return;reload();const f=Object.fromEntries(new FormData(e.target));const user=f.user.trim().toLowerCase();
+  if(DB.users.some(u=>u.user===user)){alert('Esse usuário já existe.');return}
+  DB.users.push({user,nome:f.nome.trim(),papel:'funcionario',senha:hash(f.senha)});save();renderPanel();toast('Funcionário adicionado');
+}
+function resetSenha(user){if(!needDono())return;const p=prompt('Digite a nova senha para "'+user+'" (mín. 4 caracteres):');if(!p||p.length<4)return;reload();DB.users.find(u=>u.user===user).senha=hash(p);save();renderPanel();toast('Senha alterada')}
+function delUser(user){if(!needDono())return;if(!confirm('Remover o acesso de "'+user+'"?'))return;reload();DB.users=DB.users.filter(u=>u.user!==user);save();renderPanel()}
+function minhaSenha(){
+  modal(`<h3>Alterar minha senha</h3><form onsubmit="saveMinhaSenha(event)">
+    <label>Senha atual<input name="a" type="password" required></label>
+    <label>Nova senha (mín. 4 caracteres)<input name="n" type="password" minlength="4" required></label>
+    <div class="err" id="pwErr"></div><button class="btn big">Salvar</button></form>`);
+}
+function saveMinhaSenha(e){
+  e.preventDefault();reload();const f=Object.fromEntries(new FormData(e.target));const u=me();
+  if(u.senha!==hash(f.a)){$('pwErr').textContent='Senha atual incorreta.';return}
+  u.senha=hash(f.n);save();closeModal();renderPanel();toast('Senha alterada');
+}
+
+/* --- configurações --- */
+function tabConfig(dono){
+  if(!dono)return '';const c=DB.config;
+  return `<form class="card" onsubmit="saveConfig(event)"><h3 style="margin-top:0;font-family:var(--serif)">Dados da pizzaria</h3>
+    <div class="row"><label>Nome<input name="nome" required value="${esc(c.nome)}"></label><label>Slogan<input name="slogan" value="${esc(c.slogan)}"></label></div>
+    <div class="row"><label>Telefone (exibido)<input name="telefone" value="${esc(c.telefone)}"></label><label>WhatsApp (só números, com 55 + DDD)<input name="whatsapp" value="${esc(c.whatsapp)}"></label></div>
+    <label>Endereço<input name="endereco" value="${esc(c.endereco)}"></label>
+    <div class="row"><label>Horário de funcionamento<input name="horario" value="${esc(c.horario)}"></label><label>Tempo de entrega<input name="tempo" value="${esc(c.tempo)}"></label></div>
+    <div class="row"><label>Taxa de entrega (R$)<input name="taxa" inputmode="decimal" value="${String(c.taxa).replace('.',',')}"></label><label>Pedido mínimo (R$)<input name="minimo" inputmode="decimal" value="${String(c.minimo).replace('.',',')}"></label></div>
+    <button class="btn">Salvar alterações</button></form>
+    <div class="card"><h3 style="margin-top:0;font-family:var(--serif)">Dados e backup</h3>
+      <p style="color:var(--mut);margin-top:0">Os dados ficam salvos neste navegador. Faça backup com frequência.</p>
+      <div class="acts" style="margin:0"><button class="btn gray sm" onclick="exportar()">⬇ Exportar backup</button>
+      <label class="btn gray sm" style="margin:0;cursor:pointer;display:inline-block;color:#2b2220">⬆ Importar backup<input type="file" accept=".json" hidden onchange="importar(this.files[0])"></label>
+      <button class="btn sec sm" onclick="limparFinalizados()">Apagar pedidos finalizados</button></div></div>`;
+}
+function saveConfig(e){
+  e.preventDefault();if(!needDono())return;reload();const f=Object.fromEntries(new FormData(e.target));
+  Object.assign(DB.config,{nome:f.nome.trim(),slogan:f.slogan.trim(),telefone:f.telefone.trim(),whatsapp:f.whatsapp.replace(/\D/g,''),endereco:f.endereco.trim(),horario:f.horario.trim(),tempo:f.tempo.trim(),taxa:toNum(f.taxa),minimo:toNum(f.minimo)});
+  save();renderPanel();toast('Configurações salvas');
+}
+function exportar(){
+  if(!needDono())return;reload();
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB,null,2)],{type:'application/json'}));
+  a.download='backup-pizzaria-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+}
+function importar(file){
+  if(!needDono()||!file)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);if(!d.config||!d.menu||!d.users)throw 0;if(!confirm('Isso vai substituir TODOS os dados atuais. Continuar?'))return;DB=d;save();sess=null;sessionStorage.removeItem('pz_sess');renderAdmin();alert('Backup restaurado. Faça login novamente.')}catch(e){alert('Arquivo de backup inválido.')}};
+  r.readAsText(file);
+}
+function limparFinalizados(){if(!needDono())return;if(!confirm('Apagar todos os pedidos entregues e cancelados?'))return;reload();DB.orders=DB.orders.filter(o=>!['entregue','cancelado'].includes(o.status));save();renderPanel();toast('Pedidos finalizados apagados')}
+
+route();
+</script>
+</body>
+</html>
